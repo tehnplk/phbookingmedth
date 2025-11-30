@@ -34,4 +34,5 @@ const nextConfig: NextConfig = {
   },
 };
 
+// TEAM_007: Export Next.js config for App Router + src structure
 export default nextConfig;

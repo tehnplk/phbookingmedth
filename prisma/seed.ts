@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { BRANCHES, SERVICES, STAFF_MEMBERS, STAFF_SCHEDULES, SHOP_CONFIG } from '../constants';
+import { BRANCHES, SERVICES, STAFF_MEMBERS, STAFF_SCHEDULES, SHOP_CONFIG } from '../src/constants';
 
 const prisma = new PrismaClient();
 
