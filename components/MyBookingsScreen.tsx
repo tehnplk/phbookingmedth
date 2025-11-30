@@ -1,4 +1,4 @@
-
+// Booking Step: My Bookings (ขั้นตอน: การจองของฉัน)
 import React, { useState } from 'react';
 import { BookingHistory } from '../types';
 import { MOCK_BOOKING_HISTORY } from '../constants';
@@ -43,7 +43,11 @@ export const MyBookingsScreen: React.FC<MyBookingsScreenProps> = ({ onBack }) =>
              <ChevronLeft size={20} className="mr-1"/> กลับไปรายการ
           </Button>
         </div>
-        <SuccessScreen bookingId={selectedBooking.id} />
+        <SuccessScreen 
+          bookingId={selectedBooking.id} 
+          onHome={() => setSelectedBooking(null)}
+          onCheckHistory={() => setSelectedBooking(null)}
+        />
       </div>
     );
   }

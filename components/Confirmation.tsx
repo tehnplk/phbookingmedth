@@ -1,20 +1,24 @@
-
+// Booking Step 6: Confirmation (ขั้นตอนที่ 6: ยืนยันข้อมูล)
 import React, { useState } from 'react';
 import { BookingState } from '../types';
 import { formatThaiDate, formatPhoneNumber } from '../utils';
 import { Button } from './Button';
-import { CheckCircle2, Phone, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Phone, AlertCircle, Loader2 } from 'lucide-react';
 
 interface ConfirmationProps {
   bookingState: BookingState;
   onConfirm: () => void;
-  onChange: (field: string, value: string) => void;
+  onChange: (field: keyof BookingState, value: any) => void;
+  onBack?: () => void;
+  isLoading?: boolean;
 }
 
 export const Confirmation: React.FC<ConfirmationProps> = ({ 
   bookingState, 
   onConfirm,
-  onChange 
+  onChange,
+  onBack,
+  isLoading = false
 }) => {
   const [isValidPhone, setIsValidPhone] = useState(true);
 
@@ -85,6 +89,7 @@ export const Confirmation: React.FC<ConfirmationProps> = ({
             onChange={(e) => onChange('customerName', e.target.value)}
             className="w-full px-5 py-4 rounded-xl border-2 border-stone-200 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none text-lg"
             placeholder="ระบุชื่อของคุณ"
+            disabled={isLoading}
           />
         </div>
         <div>
@@ -98,6 +103,7 @@ export const Confirmation: React.FC<ConfirmationProps> = ({
               maxLength={12} // 10 digits + 2 hyphens
               className={`w-full pl-12 pr-5 py-4 rounded-xl border-2 outline-none text-lg tracking-wide font-mono ${!isValidPhone && bookingState.customerPhone.length > 0 ? 'border-red-500 focus:border-red-500 text-red-600' : 'border-stone-200 focus:border-primary-500 focus:ring-1 focus:ring-primary-500'}`}
               placeholder="0xx-xxx-xxxx"
+              disabled={isLoading}
             />
           </div>
           {!isValidPhone && bookingState.customerPhone.length > 0 && (
@@ -111,10 +117,17 @@ export const Confirmation: React.FC<ConfirmationProps> = ({
       <Button 
         fullWidth 
         onClick={onConfirm} 
-        disabled={!canSubmit}
-        className="mt-4 !py-4 !text-xl !font-bold"
+        disabled={!canSubmit || isLoading}
+        className="mt-4 !py-4 !text-xl !font-bold flex items-center justify-center gap-2"
       >
-        ยืนยันการจอง
+        {isLoading ? (
+          <>
+            <Loader2 className="animate-spin" />
+            กำลังบันทึกข้อมูล...
+          </>
+        ) : (
+          'ยืนยันการจอง'
+        )}
       </Button>
     </div>
   );

@@ -1,4 +1,4 @@
-
+// Booking Step 3: Date Selection (ขั้นตอนที่ 3: เลือกวันที่)
 import React, { useState, useEffect } from 'react';
 import { SHOP_CONFIG } from '../constants';
 import { toISODateString, formatThaiDateShort } from '../utils';
@@ -7,11 +7,13 @@ import { Calendar, XCircle } from 'lucide-react';
 interface DateSelectionProps {
   selectedDate: Date | null;
   onSelect: (d: Date) => void;
+  onBack?: () => void;
 }
 
 export const DateSelection: React.FC<DateSelectionProps> = ({ 
   selectedDate, 
-  onSelect 
+  onSelect,
+  onBack
 }) => {
   const [dates, setDates] = useState<Date[]>([]);
 

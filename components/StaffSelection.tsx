@@ -1,4 +1,4 @@
-
+// Booking Step 5: Staff Selection (ขั้นตอนที่ 5: เลือกพนักงาน)
 import React, { useState } from 'react';
 import { Staff, TimeSlot } from '../types';
 import { STAFF_MEMBERS, STAFF_SCHEDULES } from '../constants';
@@ -11,6 +11,7 @@ interface StaffSelectionProps {
   date: Date;
   timeSlot: TimeSlot;
   onSelect: (s: Staff) => void;
+  onBack?: () => void;
 }
 
 export const StaffSelection: React.FC<StaffSelectionProps> = ({ 
@@ -18,7 +19,8 @@ export const StaffSelection: React.FC<StaffSelectionProps> = ({
   selectedStaff, 
   date,
   timeSlot,
-  onSelect 
+  onSelect,
+  onBack
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 

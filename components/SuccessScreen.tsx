@@ -1,3 +1,4 @@
+// Booking Step 7: Success Screen (ขั้นตอนที่ 7: หน้าจอสำเร็จ)
 'use client';
 
 import React from 'react';
@@ -7,9 +8,11 @@ import { CheckCircle2, QrCode } from 'lucide-react';
 
 interface SuccessScreenProps {
   bookingId: string;
+  onHome: () => void;
+  onCheckHistory: () => void;
 }
 
-export const SuccessScreen: React.FC<SuccessScreenProps> = ({ bookingId }) => {
+export const SuccessScreen: React.FC<SuccessScreenProps> = ({ bookingId, onHome, onCheckHistory }) => {
   const router = useRouter();
 
   return (
@@ -62,7 +65,7 @@ export const SuccessScreen: React.FC<SuccessScreenProps> = ({ bookingId }) => {
       </div>
 
       <div className="mt-8">
-        <Button variant="ghost" onClick={() => router.push('/')}>
+        <Button variant="ghost" onClick={onHome}>
           กลับสู่หน้าหลัก
         </Button>
       </div>

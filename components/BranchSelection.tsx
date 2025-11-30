@@ -1,4 +1,5 @@
 
+// Booking Step 1: Branch Selection (ขั้นตอนที่ 1: เลือกสาขา)
 import React from 'react';
 import { Branch } from '../types';
 import { BRANCHES } from '../constants';

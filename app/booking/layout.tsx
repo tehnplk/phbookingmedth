@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { BookingStep } from '@/types';
 import { StepIndicator } from '@/components/StepIndicator';
 import { ChevronLeft, User } from 'lucide-react';
@@ -9,25 +9,15 @@ import { useBooking } from '@/context/BookingContext';
 import { formatThaiDate } from '@/utils';
 
 export default function BookingLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
   const router = useRouter();
-  const { bookingState } = useBooking();
-
-  const getStepFromPath = (path: string): BookingStep => {
-    if (path.includes('/booking/branch')) return BookingStep.BRANCH_SELECTION;
-    if (path.includes('/booking/service')) return BookingStep.SERVICE_SELECTION;
-    if (path.includes('/booking/date')) return BookingStep.DATE_SELECTION;
-    if (path.includes('/booking/time')) return BookingStep.TIME_SELECTION;
-    if (path.includes('/booking/staff')) return BookingStep.STAFF_SELECTION;
-    if (path.includes('/booking/confirmation')) return BookingStep.CONFIRMATION;
-    if (path.includes('/booking/success')) return BookingStep.SUCCESS;
-    return BookingStep.BRANCH_SELECTION;
-  };
-
-  const currentStep = getStepFromPath(pathname);
+  const { bookingState, currentStep, setStep } = useBooking();
 
   const handleBack = () => {
-    router.back();
+    if (currentStep > BookingStep.BRANCH_SELECTION) {
+      setStep(currentStep - 1);
+    } else {
+      router.back();
+    }
   };
 
   const getStepTitle = () => {
@@ -39,20 +29,15 @@ export default function BookingLayout({ children }: { children: React.ReactNode 
       case BookingStep.STAFF_SELECTION: return 'เลือกพนักงาน';
       case BookingStep.CONFIRMATION: return 'ยืนยันการจอง';
       case BookingStep.SUCCESS: return 'จองสำเร็จ';
+      case BookingStep.MY_BOOKINGS: return 'ประวัติการจอง';
       default: return 'จองคิว';
     }
   };
 
   const handleStepClick = (step: BookingStep) => {
-    // Optional: Allow navigation by clicking steps if they are previously visited or allowed
-    // For now, we can just map step to route
-    switch (step) {
-      case BookingStep.BRANCH_SELECTION: router.push('/booking/branch'); break;
-      case BookingStep.SERVICE_SELECTION: router.push('/booking/service'); break;
-      case BookingStep.DATE_SELECTION: router.push('/booking/date'); break;
-      case BookingStep.TIME_SELECTION: router.push('/booking/time'); break;
-      case BookingStep.STAFF_SELECTION: router.push('/booking/staff'); break;
-      case BookingStep.CONFIRMATION: router.push('/booking/confirmation'); break;
+    // Only allow navigating to previous steps or the current step
+    if (step <= currentStep) {
+      setStep(step);
     }
   };
 

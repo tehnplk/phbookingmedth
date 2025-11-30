@@ -1,17 +1,21 @@
-
+// Booking Step 4: Time Selection (ขั้นตอนที่ 4: เลือกเวลา)
 import React, { useState, useEffect } from 'react';
 import { TimeSlot } from '../types';
 import { SHOP_CONFIG, GENERATE_TIME_SLOTS } from '../constants';
 import { Clock } from 'lucide-react';
 
 interface TimeSelectionProps {
+  selectedDate: Date;
   selectedTime: TimeSlot | null;
   onSelect: (t: TimeSlot) => void;
+  onBack?: () => void;
 }
 
 export const TimeSelection: React.FC<TimeSelectionProps> = ({ 
+  selectedDate,
   selectedTime, 
-  onSelect 
+  onSelect,
+  onBack
 }) => {
   const [slots, setSlots] = useState<TimeSlot[]>([]);
 

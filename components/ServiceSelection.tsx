@@ -1,4 +1,4 @@
-
+// Booking Step 2: Service Selection (ขั้นตอนที่ 2: เลือกบริการ)
 import React, { useState } from 'react';
 import { Service } from '../types';
 import { SERVICES, BRANCHES } from '../constants';
@@ -9,12 +9,14 @@ import { Sparkles, Loader2, Clock } from 'lucide-react';
 interface ServiceSelectionProps {
   branchId: string;
   onSelect: (s: Service) => void;
+  onBack?: () => void;
   recommendedId?: string;
 }
 
 export const ServiceSelection: React.FC<ServiceSelectionProps> = ({ 
   branchId,
   onSelect, 
+  onBack,
   recommendedId 
 }) => {
   const [prompt, setPrompt] = useState('');
