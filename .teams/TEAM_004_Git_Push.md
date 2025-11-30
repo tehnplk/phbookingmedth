@@ -11,5 +11,6 @@ Push the current changes to the remote repository.
 ## Log
 
 - [x] Team registered
-- [ ] Check git status
-- [ ] Push changes
+- [x] Check git status
+- [x] Push changes
+
