@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Branch {
+  id                String   @id @default(uuid())
+  name              String
+  location          String
+  image             String
+  availableServices String // Stored as JSON string of service IDs
+  bookings          Booking[]
+}
+
+model Service {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  duration    Int       // minutes
+  price       Float     // THB
+  image       String
+  bookings    Booking[]
+}
+
+model Staff {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  image     String
+  specialty String // Stored as JSON string of service IDs or names
+  bookings  Booking[]
+  schedule  StaffSchedule?
+}
+
+model StaffSchedule {
+  id        String   @id @default(uuid())
+  staffId   String   @unique
+  staff     Staff    @relation(fields: [staffId], references: [id])
+  offDays   String   // Stored as JSON string of ISO date strings
+  busySlots String   // Stored as JSON string: { [date: string]: string[] }
+}
+
+model Booking {
+  id            String   @id @default(uuid())
+  branchId      String
+  branch        Branch   @relation(fields: [branchId], references: [id])
+  serviceId     String
+  service       Service  @relation(fields: [serviceId], references: [id])
+  staffId       String
+  staff         Staff    @relation(fields: [staffId], references: [id])
+  date          DateTime
+  time          String
+  customerName  String
+  customerPhone String
+  status        String   @default("confirmed") // confirmed, completed, cancelled
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ShopConfig {
+  id           String   @id @default(uuid())
+  openTime     Int
+  closeTime    Int
+  holidays     String   // Stored as JSON string of ISO date strings
+  slotInterval Int
+}

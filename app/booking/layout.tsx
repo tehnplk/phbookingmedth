@@ -1,0 +1,121 @@
+'use client';
+
+import React from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { BookingStep } from '@/types';
+import { StepIndicator } from '@/components/StepIndicator';
+import { ChevronLeft, User } from 'lucide-react';
+import { useBooking } from '@/context/BookingContext';
+import { formatThaiDate } from '@/utils';
+
+export default function BookingLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { bookingState } = useBooking();
+
+  const getStepFromPath = (path: string): BookingStep => {
+    if (path.includes('/booking/branch')) return BookingStep.BRANCH_SELECTION;
+    if (path.includes('/booking/service')) return BookingStep.SERVICE_SELECTION;
+    if (path.includes('/booking/date')) return BookingStep.DATE_SELECTION;
+    if (path.includes('/booking/time')) return BookingStep.TIME_SELECTION;
+    if (path.includes('/booking/staff')) return BookingStep.STAFF_SELECTION;
+    if (path.includes('/booking/confirmation')) return BookingStep.CONFIRMATION;
+    if (path.includes('/booking/success')) return BookingStep.SUCCESS;
+    return BookingStep.BRANCH_SELECTION;
+  };
+
+  const currentStep = getStepFromPath(pathname);
+
+  const handleBack = () => {
+    router.back();
+  };
+
+  const getStepTitle = () => {
+    switch (currentStep) {
+      case BookingStep.BRANCH_SELECTION: return 'คลินิกแผนไทย วสส.พล';
+      case BookingStep.SERVICE_SELECTION: return 'เลือกบริการ';
+      case BookingStep.DATE_SELECTION: return 'เลือกวันที่';
+      case BookingStep.TIME_SELECTION: return 'เลือกเวลา';
+      case BookingStep.STAFF_SELECTION: return 'เลือกพนักงาน';
+      case BookingStep.CONFIRMATION: return 'ยืนยันการจอง';
+      case BookingStep.SUCCESS: return 'จองสำเร็จ';
+      default: return 'จองคิว';
+    }
+  };
+
+  const handleStepClick = (step: BookingStep) => {
+    // Optional: Allow navigation by clicking steps if they are previously visited or allowed
+    // For now, we can just map step to route
+    switch (step) {
+      case BookingStep.BRANCH_SELECTION: router.push('/booking/branch'); break;
+      case BookingStep.SERVICE_SELECTION: router.push('/booking/service'); break;
+      case BookingStep.DATE_SELECTION: router.push('/booking/date'); break;
+      case BookingStep.TIME_SELECTION: router.push('/booking/time'); break;
+      case BookingStep.STAFF_SELECTION: router.push('/booking/staff'); break;
+      case BookingStep.CONFIRMATION: router.push('/booking/confirmation'); break;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-primary-50 font-sans text-stone-800 pb-10">
+      <div className="max-w-lg mx-auto bg-primary-50 min-h-screen shadow-2xl relative">
+        
+        {/* Header */}
+        <header className="sticky top-0 z-50 bg-primary-700 text-white shadow-md transition-all duration-300">
+          <div className="px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {currentStep > 0 && currentStep !== BookingStep.SUCCESS && (
+                <button 
+                  onClick={handleBack}
+                  className="p-2 rounded-full hover:bg-primary-600 transition-colors text-white"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+              )}
+              <div>
+                <h1 className="text-xl font-bold leading-none drop-shadow-sm">{getStepTitle()}</h1>
+                {currentStep === BookingStep.BRANCH_SELECTION && (
+                   <p className="text-primary-100 text-xs mt-1">ยินดีต้อนรับเข้าสู่บริการค่ะ</p>
+                )}
+              </div>
+            </div>
+            <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center border border-primary-500 shadow-inner">
+              <User size={20} className="text-white" />
+            </div>
+          </div>
+          
+          <StepIndicator 
+            currentStep={currentStep} 
+            onStepClick={handleStepClick}
+          />
+        </header>
+
+        {/* Content */}
+        <main className="p-4 pt-6">
+          {children}
+        </main>
+
+        {/* Footer Summary (Sticky Bottom) */}
+        {currentStep > BookingStep.BRANCH_SELECTION && currentStep < BookingStep.CONFIRMATION && (
+          <div className="fixed bottom-0 left-0 right-0 z-40">
+            <div className="max-w-lg mx-auto bg-white/95 backdrop-blur-md border-t border-stone-200 p-4 shadow-lg-up">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex flex-col">
+                  <span className="text-stone-400 text-xs">สรุปรายการ</span>
+                  <div className="flex items-center gap-2 font-medium text-stone-800">
+                    {bookingState.branch?.name && <span>{bookingState.branch.name.split('สาขา')[1]}</span>}
+                    {bookingState.service && <span>• {bookingState.service.name}</span>}
+                  </div>
+                  <div className="text-primary-600 font-bold text-xs mt-0.5">
+                    {bookingState.date && <span>{formatThaiDate(bookingState.date)}</span>}
+                    {bookingState.timeSlot && <span>, {bookingState.timeSlot.time} น.</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
