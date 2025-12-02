@@ -38,7 +38,7 @@ yarn-error.log*
 
 # typescript
 # database
-*.db
+
 
 # trash
 .trash/
